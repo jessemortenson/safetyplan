@@ -14,3 +14,17 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.panel {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 30%;
+  min-height: 100%;
+  padding: 2rem;
+  border-right: 2px solid #aaa;
+  background-color: #eee;
+}
+.panel.hidden {
+  display: none;
+}
