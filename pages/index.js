@@ -23,7 +23,9 @@ export default function Home() {
             Let's Make A Public Safety
           </h1>
 
-          <Maker setPanelContent={setPanelContent} />
+          <div className="row">
+            <Maker setPanelContent={setPanelContent} />
+          </div>
         </main>
 
         <footer className={styles.footer}>

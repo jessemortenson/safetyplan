@@ -1,0 +1,12 @@
+.safetyItems > div {
+    margin: 1rem 0;
+    padding: .25rem;
+    border: 1px solid purple;
+}
+.safetyItems > div.highlighted {
+    background-color: lightblue;
+}
+.safetyItems > div.lowlighted {
+    background-color: #aaa;
+    opacity: .7;
+}
