@@ -1,10 +1,20 @@
 import React, { useState } from "react";
 import EditHarm from "./EditHarm";
 import EditMitigation from './EditMitigation';
+import Graph from './Graph';
+import peoplesBudget from '../../data/peoplesBudget';
+
+/*
+ * mitigation: { id: null, name: "", cost: 0, parents: [], description: "", theme: "" }
+ * harm: { id: null, name: "", quantity: 0, parents: [], description: "" }
+ * office: { id: null, name: "", parents: [], description: "" }
+ */
+
+
 
 export default function MakeSafetyPlan({ setPanelContent }) {
-  const [harms, setHarms] = useState([]);
-  const [mitigations, setMitigations] = useState([]);
+  const [harms, setHarms] = useState(peoplesBudget.harms);
+  const [mitigations, setMitigations] = useState(peoplesBudget.mitigations);
   const addHarm = (event) => {
     event.preventDefault();
     editHarm({})
@@ -39,6 +49,12 @@ export default function MakeSafetyPlan({ setPanelContent }) {
   }
   return (
     <div>
+
+      <div className="row">
+        <div className="twelve columns">
+          <Graph mitigations={mitigations} harms={harms} />
+        </div>
+      </div>
 
       <div className="row">
 
