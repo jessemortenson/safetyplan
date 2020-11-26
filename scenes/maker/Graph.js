@@ -1,5 +1,5 @@
 import React from 'react';
-import {ForceGraph, ForceGraphNode, ForceGraphLink} from 'react-vis-force';
+import dynamic from 'next/dynamic'
 
 export default function Graph({ mitigations, harms }) {
   // https://coolors.co/eddcd2-fff1e6-fde2e4-fad2e1-c5dedd-dbe7e4-f0efeb-d6e2e9-bcd4e6-99c1de
@@ -36,20 +36,24 @@ export default function Graph({ mitigations, harms }) {
   const harmMax = Math.max(...harmSizes);
   const harmRadiusTransform = () => 25 // (quantity) => ((quantity - harmMin) / (harmMax - harmMin)) * (dotMax - dotMin) + dotMin;
 
-  const renderMitigationTargets = (mitigation) => mitigation.targets.map(t => (
-    <ForceGraphLink link={{ source: mitigation.id, target: t.id }} />
-  ));
+  const mitigationToLinksReducer = (links, m) => {
+    return links.concat(m.targets.map(t => ({ source: m.id, target: t.id })));
+  }
 
-  return (
-    <ForceGraph simulationOptions={{ height: 480, width: 960 }} showLabels zoom zoomOptions={{ minScale: 100, maxScale: 200 }}>
-      { mitigations.map(m => <ForceGraphNode node={{ id: m.id }} fill={mitigationColors[m.theme]} radius={mitigationRadiusTransform(m.cost)} />) }
-      { harms.map(h => <ForceGraphNode node={{ id: h.id }} fill={harmColors[h.id]} radius={harmRadiusTransform(h.quantity)} />) }
+  const makeCityBudgetAndLinks = (mitigations) => {
+    const budget = { id: "budget", name: "City Budget", description: "The City Budget" };
+    const links = mitigations.map(m => ({ source: m.id, target: budget.id }));
 
-      { mitigations.map(m => renderMitigationTargets(m)) }
+    return [budget, links];
+  }
 
-      {/*<ForceGraphNode node={{ id: 'first-node' }} fill="red" />*/}
-      {/*<ForceGraphNode node={{ id: 'second-node' }} fill="blue" />*/}
-      {/*<ForceGraphLink link={{ source: 'first-node', target: 'second-node' }} />*/}
-    </ForceGraph>
-  );
+  const [budgetNode, budgetLinks] = makeCityBudgetAndLinks(mitigations);
+  const graphData = {
+    nodes: mitigations.concat(harms).concat([budgetNode]),
+    links: mitigations.reduce(mitigationToLinksReducer, []).concat(budgetLinks),
+  };
+
+  const DynamicLoadedForceGraph2D = dynamic(() => import("react-force-graph").then(forceGraphModule => forceGraphModule.ForceGraph2D), { ssr: false });
+
+  return <DynamicLoadedForceGraph2D graphData={graphData} width={960} height={640} />
 }
