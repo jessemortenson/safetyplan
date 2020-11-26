@@ -1,5 +1,6 @@
-import React from 'react';
-import dynamic from 'next/dynamic'
+import React, { useEffect, useRef } from "react";
+// import dynamic from "next/dynamic";
+import { forceCollide } from "d3-force-3d";
 
 export default function Graph({ mitigations, harms }) {
   // https://coolors.co/eddcd2-fff1e6-fde2e4-fad2e1-c5dedd-dbe7e4-f0efeb-d6e2e9-bcd4e6-99c1de
@@ -36,12 +37,27 @@ export default function Graph({ mitigations, harms }) {
   const harmMax = Math.max(...harmSizes);
   const harmRadiusTransform = () => 25 // (quantity) => ((quantity - harmMin) / (harmMax - harmMin)) * (dotMax - dotMin) + dotMin;
 
+  const mitigationScaler = cost => .00002 * cost;
+  const mitigationMapper = (m) => ({
+    ...m,
+    color: mitigationColors[m.theme],
+    val: mitigationScaler(m.cost), // affects node size
+  })
+
+  const harmScaler = quantity => quantity;
+  const harmMapper = (h) => ({
+    ...h,
+    color: "#bfacb5",
+    val: harmScaler(h.quantity),
+  });
+
   const mitigationToLinksReducer = (links, m) => {
     return links.concat(m.targets.map(t => ({ source: m.id, target: t.id })));
   }
 
+  const cityBudgetScaler = cost => .00000001 * cost;
   const makeCityBudgetAndLinks = (mitigations) => {
-    const budget = { id: "budget", name: "City Budget", description: "The City Budget" };
+    const budget = { id: "budget", name: "City Budget", description: "The City Budget", val: cityBudgetScaler(1470000000), color: '#aaa'};
     const links = mitigations.map(m => ({ source: m.id, target: budget.id }));
 
     return [budget, links];
@@ -49,11 +65,39 @@ export default function Graph({ mitigations, harms }) {
 
   const [budgetNode, budgetLinks] = makeCityBudgetAndLinks(mitigations);
   const graphData = {
-    nodes: mitigations.concat(harms).concat([budgetNode]),
+    nodes: mitigations.map(mitigationMapper).concat(harms.map(harmMapper)).concat([budgetNode]),
     links: mitigations.reduce(mitigationToLinksReducer, []).concat(budgetLinks),
   };
 
-  const DynamicLoadedForceGraph2D = dynamic(() => import("react-force-graph").then(forceGraphModule => forceGraphModule.ForceGraph2D), { ssr: false });
+  const fgRef = useRef();
+  useEffect(() => {
+    const fg = fgRef.current;
+    if (fg.d3Force) {
+      console.log('doing the force thing');
+      // fg.d3Force('charge', null);
+      fg.d3Force('collide', forceCollide(n => n.val + 5));
+    }
+  }, []);
 
-  return <DynamicLoadedForceGraph2D graphData={graphData} width={960} height={640} />
+  let simulationRuns = 0;
+  const onStop = () => {
+    simulationRuns++;
+    const fg = fgRef.current;
+    // Re zoom after the first simulation run
+    if (simulationRuns === 1) {
+      fg.zoomToFit(300);
+    }
+    console.log('stopped');
+  }
+
+  let ForceGraph2D = () => null;
+  if (typeof window !== 'undefined') ForceGraph2D = require('react-force-graph').ForceGraph2D;
+  // The Dynamic component with SSR disabled doesn't seem to work with refs
+  // fix from https://github.com/vasturiano/react-globe.gl/issues/15
+  // fix that didn't work but should have: https://github.com/vercel/next.js/issues/4957#issuecomment-413841689
+  // const DynamicLoadedForceGraph2D = dynamic(() => import("react-force-graph").then(forceGraphModule => forceGraphModule.ForceGraph2D), { ssr: false });
+  // const ForwardedRefForceGraph2D = React.forwardRef((props, ref) => (
+  //   <DynamicLoadedForceGraph2D {...props} forwardedRef={ref} />
+  // ));
+  return <ForceGraph2D graphData={graphData} width={960} height={640} cooldownTime={3000} onEngineStop={onStop} ref={fgRef} />
 }
