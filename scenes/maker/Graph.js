@@ -24,6 +24,16 @@ export default function Graph({ mitigations, harms }) {
     "housing": "#7f7b82",
   }
 
+  const currencyFormatter = (num) => {
+    if(num > 999 && num < 1000000){
+      return `$${(num/1000).toFixed(1)}K`; // convert to K for number from > 1000 < 1 million
+    }else if(num >= 1000000){
+      return `$${(num/1000000).toFixed(1)}M`; // convert to M for number from > 1 million
+    }else if(num < 900){
+      return `$${num}`; // if value < 1000, nothing to do
+    }
+  }
+
   const dotMin = 10;
   const dotMax = 100;
 
@@ -40,6 +50,7 @@ export default function Graph({ mitigations, harms }) {
   const mitigationScaler = cost => .00002 * cost;
   const mitigationMapper = (m) => ({
     ...m,
+    type: "mitigation",
     color: mitigationColors[m.theme],
     val: mitigationScaler(m.cost), // affects node size
   })
@@ -47,6 +58,7 @@ export default function Graph({ mitigations, harms }) {
   const harmScaler = quantity => quantity;
   const harmMapper = (h) => ({
     ...h,
+    type: "harm",
     color: "#bfacb5",
     val: harmScaler(h.quantity),
   });
@@ -55,9 +67,16 @@ export default function Graph({ mitigations, harms }) {
     return links.concat(m.targets.map(t => ({ source: m.id, target: t.id })));
   }
 
-  const cityBudgetScaler = cost => .00000001 * cost;
+  const cityBudgetScaler = cost => .00000002 * cost;
   const makeCityBudgetAndLinks = (mitigations) => {
-    const budget = { id: "budget", name: "City Budget", description: "The City Budget", val: cityBudgetScaler(1470000000), color: '#aaa'};
+    const budget = {
+      id: "budget",
+      type: "budget",
+      name: "City Budget",
+      description: "The City Budget",
+      val: cityBudgetScaler(1470000000),
+      color: '#aaa'
+    };
     const links = mitigations.map(m => ({ source: m.id, target: budget.id }));
 
     return [budget, links];
@@ -69,13 +88,49 @@ export default function Graph({ mitigations, harms }) {
     links: mitigations.reduce(mitigationToLinksReducer, []).concat(budgetLinks),
   };
 
+  // Shape makers
+  // TODO seems like this runs forever ??? shapemaker is getting called constantly
+  const labelMaker = (node, ctx, scale) => {
+    const {x, y} = node;
+    ctx.fillStyle = '#000';
+    const fontsize = scale < 1 ? 8 : 12 / scale;
+    ctx.font = `${fontsize}px Sans-Serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const baseText = (node.type === 'harm' || node.type === 'budget') ? node.name : currencyFormatter(node.cost);
+    const text = (node.type === 'mitigation' && node.val > 15) ? `${baseText}: ${node.name}` : baseText;
+    ctx.fillText(text, x, y);
+  }
+  const circleMaker = (node, ctx, scale) => {
+    const { x, y } = node;
+    ctx.beginPath();
+    ctx.arc(x, y, node.val/2, 0, 2 * Math.PI, false);
+    ctx.fill();
+  }
+  const squareMaker = (node, ctx, scale) => {
+    const { x, y } = node;
+    const width = node.val * 1.5;
+    const height = node.val;
+    ctx.fillRect(x - width/2, y - height/2, width, height);
+  }
+  const shapeMaker = (node, ctx, scale) => {
+    ctx.fillStyle = node.color;
+    if (node.type === 'budget') {
+      squareMaker(node, ctx, scale);
+    } else {
+      circleMaker(node, ctx, scale);
+    }
+    labelMaker(node, ctx, scale);
+  }
+
+  // Effects and callbacks
   const fgRef = useRef();
   useEffect(() => {
+    console.log('running UseEffect');
     const fg = fgRef.current;
     if (fg.d3Force) {
-      console.log('doing the force thing');
       // fg.d3Force('charge', null);
-      fg.d3Force('collide', forceCollide(n => n.val + 5));
+      fg.d3Force('collide', forceCollide(n => n.val/2 + 10));
     }
   }, []);
 
@@ -87,7 +142,6 @@ export default function Graph({ mitigations, harms }) {
     if (simulationRuns === 1) {
       fg.zoomToFit(300);
     }
-    console.log('stopped');
   }
 
   let ForceGraph2D = () => null;
@@ -99,5 +153,13 @@ export default function Graph({ mitigations, harms }) {
   // const ForwardedRefForceGraph2D = React.forwardRef((props, ref) => (
   //   <DynamicLoadedForceGraph2D {...props} forwardedRef={ref} />
   // ));
-  return <ForceGraph2D graphData={graphData} width={960} height={640} cooldownTime={3000} onEngineStop={onStop} ref={fgRef} />
+  return <ForceGraph2D
+    graphData={graphData}
+    width={960}
+    height={640}
+    cooldownTime={3000}
+    nodeCanvasObject={shapeMaker}
+    onEngineStop={onStop}
+    ref={fgRef}
+  />
 }
