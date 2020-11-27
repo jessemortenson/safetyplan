@@ -116,6 +116,60 @@ export default {
       description: "Build safer streets for pedestrians and bikers according to SMPSC’s recommendations",
       theme: "health",
       targets: [{ id: "unsafe-streets"}]
+    },
+    {
+      id: "build-housing",
+      name: "Find and Build Housing",
+      description: "Find housing, create permanent housing, and support people to stay housed",
+      cost: 30000000,
+      parents: [],
+      theme: "economic-justice",
+      targets: [{ id: "housing" }],
+    },
+    {
+      id: "direct-relief",
+      name: "Direct economic relief",
+      description: "Provide direct economic relief to residents and pay people to stay home while COVID crisis continues.",
+      cost: 10000000,
+      parents: [],
+      theme: "economic-justice",
+      targets: [{ id: "pandemic" }, { id: "poverty" }],
+    },
+    {
+      id: "childcare",
+      name: "Free childcare",
+      description: "Contract with local providers for free, culturally competent childcare that not tied to food support (WIC)",
+      cost: 5000000,
+      parents: [],
+      theme: "economic-justice",
+      targets: [{ id: "poverty" }],
+    },
+    {
+      id: "mutual-aid-sites",
+      name: "Support mutual aid sites",
+      description: "Ongoing support for mutual aid sites, including those without nonprofit status",
+      cost: 4500000,
+      parents: [],
+      theme: "economic-justice",
+      targets: [{ id: "poverty" }],
+    },
+    {
+      id: "support-dsv-survivors",
+      name: "Support survivors of domestic/sexual violence",
+      description: "Increase funding to existing contracts to provide direct economic support for survivors of domestic and sexual violence. Support must be meaningful and go beyond reimbursements or gas cards",
+      cost: 30000,
+      parents: [],
+      theme: "economic-justice",
+      targets: [{ id: "domestic-sexual-violence" }]
+    },
+    {
+      id: "workers-rights-outreach",
+      name: "Worker's rights outreach and investigation",
+      description: "Protect community contracts for education and outreach on worker rights, including sick and safe time and liveable minimum wage, and fund 6 investigators in Labor Standards Department",
+      cost: 600000,
+      parents: [],
+      theme: "economic-justice",
+      targets: [{ id: "poverty" }, { id: "wage-theft" }],
     }
   ],
   harms: [
@@ -123,6 +177,11 @@ export default {
       id: "police-violence",
       name: "Police violence",
       quantity: 20
+    },
+    {
+      id: "domestic-sexual-violence",
+      name: "Domestic & sexual violence",
+      quantity: 25,
     },
     {
       id: "mental-health",
@@ -153,6 +212,16 @@ export default {
       id: "housing",
       name: "Housing access",
       quantity: 20,
+    },
+    {
+      id: "poverty",
+      name: "Poverty",
+      quantity: 30,
+    },
+    {
+      id: "wage-theft",
+      name: "Wage theft",
+      quantity: 30,
     }
   ],
 }
