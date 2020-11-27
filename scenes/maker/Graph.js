@@ -7,7 +7,7 @@ export default function Graph({ mitigations, harms }) {
   const mitigationColors = {
     health: "#BCD4E6",
     other1: "#99C1DE",
-    other2: "#D6E2E9",
+    "economic-justice": "#D6E2E9",
     other3: "#DBE7E4",
     other4: "#C5DEDD",
     other5: "#FFF1E6",
@@ -47,7 +47,7 @@ export default function Graph({ mitigations, harms }) {
   const harmMax = Math.max(...harmSizes);
   const harmRadiusTransform = () => 25 // (quantity) => ((quantity - harmMin) / (harmMax - harmMin)) * (dotMax - dotMin) + dotMin;
 
-  const mitigationScaler = cost => .00002 * cost;
+  const mitigationScaler = cost => .0002 * cost;
   const mitigationMapper = (m) => ({
     ...m,
     type: "mitigation",
@@ -55,7 +55,7 @@ export default function Graph({ mitigations, harms }) {
     val: mitigationScaler(m.cost), // affects node size
   })
 
-  const harmScaler = quantity => quantity;
+  const harmScaler = quantity => quantity * 50;
   const harmMapper = (h) => ({
     ...h,
     type: "harm",
@@ -103,8 +103,11 @@ export default function Graph({ mitigations, harms }) {
   }
   const circleMaker = (node, ctx, scale) => {
     const { x, y } = node;
+    // treat node.val as the desired *area* of the circle, not its radius
+    // so solve the circle for radius
+    const radius = Math.round(Math.sqrt(node.val/Math.PI));
     ctx.beginPath();
-    ctx.arc(x, y, node.val/2, 0, 2 * Math.PI, false);
+    ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
     ctx.fill();
   }
   const squareMaker = (node, ctx, scale) => {
@@ -130,7 +133,9 @@ export default function Graph({ mitigations, harms }) {
     const fg = fgRef.current;
     if (fg.d3Force) {
       // fg.d3Force('charge', null);
-      fg.d3Force('collide', forceCollide(n => n.val/2 + 10));
+      // treat n.val as the intended AREA, not radius
+      // so solve for radius
+      fg.d3Force('collide', forceCollide(n =>  Math.round(Math.sqrt(n.val/Math.PI)) + 10));
     }
   }, []);
 
@@ -159,6 +164,7 @@ export default function Graph({ mitigations, harms }) {
     height={640}
     cooldownTime={3000}
     nodeCanvasObject={shapeMaker}
+    nodeRelSize={.6}
     onEngineStop={onStop}
     ref={fgRef}
   />
