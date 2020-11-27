@@ -102,8 +102,8 @@ export default function MakeSafetyPlan({ setPanelContent }) {
             { harms.map(harm => <div
               key={harm.id}
               className={(`harm-${harm.id} ${getHighlightClass(harm.highlight)}`)}
-              onMouseEnter={highlightMouseEnterFactory('harm', harm.id)}
-              onMouseLeave={highlightMouseExitFactory()}
+              // onMouseEnter={highlightMouseEnterFactory('harm', harm.id)}
+              // onMouseLeave={highlightMouseExitFactory()}
             >
               {harm.name} - {harm.quantity}
             </div>) }
@@ -118,8 +118,8 @@ export default function MakeSafetyPlan({ setPanelContent }) {
             { mitigations.map(mitigation => <div
               key={mitigation.id}
               className={(`mitigation-${mitigation.id} ${getHighlightClass(mitigation.highlight)}`)}
-              onMouseEnter={highlightMouseEnterFactory('mitigation', mitigation.id)}
-              onMouseLeave={highlightMouseExitFactory()}
+              // onMouseEnter={highlightMouseEnterFactory('mitigation', mitigation.id)}
+              // onMouseLeave={highlightMouseExitFactory()}
             >
               {mitigation.name} - ${mitigation.cost}
             </div>) }
