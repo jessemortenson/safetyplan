@@ -8,9 +8,10 @@
     "start": "next start"
   },
   "dependencies": {
-    "next": "9.5.3",
+    "next": "^10.0.3",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "react-lineto": "^3.2.0"
+    "react-lineto": "^3.2.0",
+    "react-force-graph": "^1.37.1"
   }
 }

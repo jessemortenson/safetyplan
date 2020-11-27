@@ -3,17 +3,19 @@ import { SteppedLineTo } from 'react-lineto';
 import styles from '../../styles/Maker.module.css'
 import EditHarm from "./EditHarm";
 import EditMitigation from './EditMitigation';
+import Graph from './Graph';
+import peoplesBudget from '../../data/peoplesBudget';
+
+/*
+ * mitigation: { id: null, name: "", cost: 0, parents: [], description: "", theme: "" }
+ * harm: { id: null, name: "", quantity: 0, parents: [], description: "" }
+ * office: { id: null, name: "", parents: [], description: "" }
+ */
 
 export default function MakeSafetyPlan({ setPanelContent }) {
-  // Examples
-  const exampleHarms = [{ id: 1, name: 'Test Harm', quantity: 30 }, { id: 2, name: 'Second harm', quantity: 15 }, { id: 3, name: 'Third Harm', quantity: 200 }]
-  const exampleMitigations = [{ id: 1, name: 'Mitigation Test', cost: 500 }]
-  const exampleConnections = [{ mitigationId: 1, harms: [{ harmId: 1, quantity: 30}, { harmId: 2, quantity: 10 }]}]
-
   // State!
-  const [harms, setHarms] = useState(exampleHarms);
-  const [mitigations, setMitigations] = useState(exampleMitigations);
-  const [connections, setConnections] = useState(exampleConnections);
+  const [harms, setHarms] = useState(peoplesBudget.harms);
+  const [mitigations, setMitigations] = useState(peoplesBudget.mitigations);
 
   const entityArraySorter = (a, b) => a.id > b.id ? 1 : -1;
 
@@ -85,6 +87,13 @@ export default function MakeSafetyPlan({ setPanelContent }) {
   // connection = { mitigation
   return (
     <div>
+      <div className="row">
+        <div className="twelve columns">
+          <Graph mitigations={mitigations} harms={harms} />
+        </div>
+      </div>
+
+      <div className="row">
         <div className="one-half column">
           <h2>Harms</h2>
           <h3>What is causing people to be unsafe in Minneapolis?</h3>
@@ -117,20 +126,20 @@ export default function MakeSafetyPlan({ setPanelContent }) {
           </div>
         </div>
 
-        {
-          process.browser && (
-            // Draw connections to represent mitigation of harms
-            connections.map(c =>  c.harms.map(cHarm => <SteppedLineTo
-              key={`${c.mitigationId}-${cHarm.harmId}`}
-              from={(`mitigation-${c.mitigationId}`)}
-              to={(`harm-${cHarm.harmId}`)}
-              fromAnchor={'left'}
-              toAnchor={'right'}
-              orientation={'h'}
-            />))
-          )
-        }
-
+        {/*{*/}
+        {/*  process.browser && (*/}
+        {/*    // Draw connections to represent mitigation of harms*/}
+        {/*    mitigations.map(m =>  m.targets.map(mTarget => <SteppedLineTo*/}
+        {/*      key={`${m.id}-${mTarget.id}`}*/}
+        {/*      from={(`mitigation-${m.id}`)}*/}
+        {/*      to={(`harm-${mTarget.id}`)}*/}
+        {/*      fromAnchor={'left'}*/}
+        {/*      toAnchor={'right'}*/}
+        {/*      orientation={'h'}*/}
+        {/*    />))*/}
+        {/*  )*/}
+        {/*}*/}
+      </div>
     </div>
   );
 }
