@@ -123,7 +123,7 @@ export default function Graph({ mitigations, harms }) {
   }
   const squareMaker = (node, ctx, scale) => {
     const { x, y } = node;
-    const width = node.val * 1.5;
+    const width = node.val * 1;
     const height = node.val;
     ctx.fillRect(x - width/2, y - height/2, width, height);
   }
