@@ -34,7 +34,7 @@ export default function MakeSafetyPlan({ setPanelContent }) {
   // State!
   const [planId, setPlanId] = useState('peoplesBudget')
   const [harms, setHarms] = useState(defaultHarms);
-  const [showHarms, setShowHarms] = useState(false);
+  const [showHarms, setShowHarms] = useState(true);
   const [harmHighlighted, setHarmHighlighted] = useState(null);
   const initialPlan = plans.find(p => p.id === planId);
   const [mitigations, setMitigations] = useState((initialPlan && initialPlan.mitigations) || []);
@@ -60,6 +60,16 @@ export default function MakeSafetyPlan({ setPanelContent }) {
     setHarms([...unchangedHarms, harm].sort(entityArraySorter));
     setPanelContent(null);
   };
+  const harmsByQuantitySorter = (a, b) => {
+    if (a.quantity > b.quantity) {
+      return -1;
+    }
+    if (b.quantity < a.quantity) {
+      return 1;
+    }
+    return 0;
+  };
+  const harmsByAlphaSorter = (a, b) => a.name.localeCompare(b.name, 'en', { numeric: true });
 
   // Mitigations
   const addMitigation = (event) => {
@@ -109,6 +119,7 @@ export default function MakeSafetyPlan({ setPanelContent }) {
     // Update the plan - and correspondingly update mitigations
     setPlanId(plan.id);
     setMitigations(plan.mitigations);
+    setHarmHighlighted(null);
   }
   const currentPlan = plans.find(p => p.id === planId);
   const currentPlanCost = currentPlan.mitigations.reduce((cost, m) => m.cost + cost, 0);
@@ -138,6 +149,14 @@ export default function MakeSafetyPlan({ setPanelContent }) {
       setHarmHighlighted(harm.id);
     }
   }
+  const harmHighlightChangeHandler = (event) => {
+    event.preventDefault();
+    if (event.target.value === "" && harmHighlighted !== null) {
+      setHarmHighlighted(null);
+    } else if (event.target.value !== harmHighlighted) {
+      setHarmHighlighted(event.target.value);
+    }
+  }
   const getHarmHighlightClass = (harm) => {
     if (harmHighlighted !== null && harmHighlighted !== harm.id) {
       return "lowlighted";
@@ -147,6 +166,19 @@ export default function MakeSafetyPlan({ setPanelContent }) {
     }
     return "";
   }
+
+  // Filter mitigations & harms
+  const mitigationsShown = mitigations.filter(m => harmHighlighted === null || m.targets.find(t => t.id === harmHighlighted));
+  const harmsTargetedByMitigations = harms.filter((h) => {
+    let harmTargetedByMitigation = false;
+    mitigations.forEach(m => {
+      if (m.targets.find(t => t.id === h.id)) {
+        harmTargetedByMitigation = true;
+      }
+    });
+    return harmTargetedByMitigation;
+  });
+  const harmsToShow = (harmHighlighted !== null && [harms.find(h => h.id === harmHighlighted)]) || harmsTargetedByMitigations;
 
   // responsive graph size ???
   const graphContainerRef = useRef();
@@ -181,19 +213,28 @@ export default function MakeSafetyPlan({ setPanelContent }) {
       </div>
 
       <div className="row graph-controls">
-        <div className="twelve columns">
+        <div className="eight columns">
           <label>
             <input type="checkbox" checked={showHarms} onChange={showHarmsChangeHandler} />
             <span className="label-body">Show Harms addressed by proposals</span>
           </label>
+        </div>
+        <div className="four columns">
+          <select className="u-full-width" onChange={harmHighlightChangeHandler}>
+            <option value="" selected={harmHighlighted === null}>-- show only proposals re:...</option>
+            <option value="">All</option>
+            { harmsTargetedByMitigations.sort(harmsByAlphaSorter).map(h => (
+              <option value={h.id} selected={harmHighlighted === h.id}>{h.name}</option>
+            ))}
+          </select>
         </div>
       </div>
 
       <div className="row">
         <div className="twelve columns maker-graph" ref={graphContainerRef}>
           <Graph
-            mitigations={mitigations}
-            harms={harms}
+            mitigations={mitigations.filter(m => harmHighlighted === null || m.targets.find(t => t.id === harmHighlighted))}
+            harms={harmsToShow}
             showHarms={showHarms}
             height={graphDimensions.height}
             width={graphDimensions.width}
@@ -238,15 +279,7 @@ export default function MakeSafetyPlan({ setPanelContent }) {
           <h3>What are some of the root causes of risk/unsafety to people in Minneapolis?</h3>
           {/*<button type="button" onClick={addHarm}>Describe Harm</button>*/}
           <div className="safetyItems">
-            { harms.sort((a, b) => {
-              if (a.quantity > b.quantity) {
-                return -1;
-              }
-              if (b.quantity < a.quantity) {
-                return 1;
-              }
-              return 0;
-            }).map(harm => <div
+            { harmsTargetedByMitigations.sort(harmsByQuantitySorter).map(harm => <div
               key={harm.id}
               className={`harm-${harm.id} ${getHarmHighlightClass(harm)}`}
               onClick={harmHighlightFactory(harm)}

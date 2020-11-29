@@ -30,6 +30,19 @@ a {
   display: none;
 }
 
+.graph-controls select {
+  height: 80%;
+  margin: 0 0 4px 0;
+  padding: 1px;
+}
+.graph-controls label {
+  margin: 0;
+}
+
+.row.about {
+  margin-top: 2rem;
+}
+
 .safetyItems > div {
   margin: 1rem 0;
   padding: .25rem;

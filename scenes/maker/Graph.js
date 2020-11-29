@@ -55,19 +55,11 @@ export default function Graph({ mitigations, harms, showHarms, height, width }) 
     color: "#bfacb5",
     val: harmScaler(h.quantity),
   });
-  const harmFilter = (h) => {
-    let harmTargetedByMitigation = false;
-    mitigations.forEach(m => {
-      if (m.targets.find(t => t.id === h.id)) {
-        harmTargetedByMitigation = true;
-      }
-    });
-    return harmTargetedByMitigation;
-  }
+
 
   const mitigationToLinksReducer = (links, m) => {
     if (!showHarms) return [];
-    return links.concat(m.targets.map(t => ({ source: m.id, target: t.id })));
+    return links.concat(m.targets.filter(t => harms.find(h => h.id === t.id)).map(t => ({ source: m.id, target: t.id })));
   }
 
   const cityBudgetScaler = cost => .00000002 * cost;
@@ -86,7 +78,7 @@ export default function Graph({ mitigations, harms, showHarms, height, width }) 
   }
 
   const [budgetNode, budgetLinks] = makeCityBudgetAndLinks(mitigations);
-  const harmsToShow = showHarms ? harms.filter(harmFilter).map(harmMapper) : [];
+  const harmsToShow = showHarms ? harms.map(harmMapper) : [];
   const graphData = {
     nodes: mitigations.map(mitigationMapper).concat(harmsToShow).concat([budgetNode]),
     links: mitigations.reduce(mitigationToLinksReducer, []).concat(budgetLinks),
@@ -166,7 +158,7 @@ export default function Graph({ mitigations, harms, showHarms, height, width }) 
     graphData={graphData}
     width={width}
     height={height}
-    cooldownTime={3000}
+    cooldownTime={2000}
     nodeCanvasObject={shapeMaker}
     nodeRelSize={.6}
     onEngineStop={onStop}
