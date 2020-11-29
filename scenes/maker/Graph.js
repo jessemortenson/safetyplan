@@ -9,8 +9,8 @@ export default function Graph({ mitigations, harms }) {
     other1: "#99C1DE",
     "economic-justice": "#D6E2E9",
     other3: "#DBE7E4",
-    other4: "#C5DEDD",
-    other5: "#FFF1E6",
+    prevention: "#C5DEDD",
+    thriving: "#FFF1E6",
     other6: "#EDDCD2",
   }
   // https://coolors.co/172121-444554-7f7b82-bfacb5-e5d0cc
