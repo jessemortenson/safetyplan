@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { SteppedLineTo } from 'react-lineto';
 import styles from '../../styles/Maker.module.css'
 import EditHarm from "./EditHarm";
 import EditMitigation from './EditMitigation';
 import Graph from './Graph';
 import peoplesBudget from '../../data/peoplesBudget';
+import safetyForAllBudget from "../../data/safetyForAllBudget";
+import defaultHarms from '../../data/harms';
 
 /*
  * mitigation: { id: null, name: "", cost: 0, parents: [], description: "", theme: "" }
@@ -14,8 +15,8 @@ import peoplesBudget from '../../data/peoplesBudget';
 
 export default function MakeSafetyPlan({ setPanelContent }) {
   // State!
-  const [harms, setHarms] = useState(peoplesBudget.harms);
-  const [mitigations, setMitigations] = useState(peoplesBudget.mitigations);
+  const [harms, setHarms] = useState(defaultHarms);
+  const [mitigations, setMitigations] = useState(safetyForAllBudget);
 
   const entityArraySorter = (a, b) => a.id > b.id ? 1 : -1;
 

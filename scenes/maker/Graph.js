@@ -6,12 +6,14 @@ export default function Graph({ mitigations, harms }) {
   // https://coolors.co/eddcd2-fff1e6-fde2e4-fad2e1-c5dedd-dbe7e4-f0efeb-d6e2e9-bcd4e6-99c1de
   const mitigationColors = {
     health: "#BCD4E6",
+    "right-response": "#BCD4E6",
     other1: "#99C1DE",
     "economic-justice": "#D6E2E9",
     other3: "#DBE7E4",
     prevention: "#C5DEDD",
+    "prevent-violence": "#C5DEDD",
     thriving: "#FFF1E6",
-    other6: "#EDDCD2",
+    "police-accountability": "#EDDCD2",
   }
   // https://coolors.co/172121-444554-7f7b82-bfacb5-e5d0cc
   const harmColors = {
@@ -62,6 +64,15 @@ export default function Graph({ mitigations, harms }) {
     color: "#bfacb5",
     val: harmScaler(h.quantity),
   });
+  const harmFilter = (h) => {
+    let harmTargetedByMitigation = false;
+    mitigations.forEach(m => {
+      if (m.targets.find(t => t.id === h.id)) {
+        harmTargetedByMitigation = true;
+      }
+    });
+    return harmTargetedByMitigation;
+  }
 
   const mitigationToLinksReducer = (links, m) => {
     return links.concat(m.targets.map(t => ({ source: m.id, target: t.id })));
@@ -84,7 +95,7 @@ export default function Graph({ mitigations, harms }) {
 
   const [budgetNode, budgetLinks] = makeCityBudgetAndLinks(mitigations);
   const graphData = {
-    nodes: mitigations.map(mitigationMapper).concat(harms.map(harmMapper)).concat([budgetNode]),
+    nodes: mitigations.map(mitigationMapper).concat(harms.filter(harmFilter).map(harmMapper)).concat([budgetNode]),
     links: mitigations.reduce(mitigationToLinksReducer, []).concat(budgetLinks),
   };
 

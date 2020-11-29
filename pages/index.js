@@ -14,13 +14,13 @@ export default function Home() {
 
       <div className="container">
         <Head>
-          <title>Create Next App</title>
+          <title>Public Safety Planning</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
         <main>
           <h1 className={styles.title}>
-            Let's Make A Public Safety
+            Public Safety Plans
           </h1>
 
           <div className="row">
