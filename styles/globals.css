@@ -42,3 +42,13 @@ a {
   background-color: #aaa;
   opacity: .3;
 }
+
+.plan-selection {
+  text-align: center;
+}
+.plan-selection > button {
+  margin-right: 1rem;
+}
+.plan-selection > button:last-child {
+  margin-right: 0;
+}

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import styles from '../../styles/Maker.module.css'
 import EditHarm from "./EditHarm";
 import EditMitigation from './EditMitigation';
 import Graph from './Graph';
@@ -14,9 +13,26 @@ import defaultHarms from '../../data/harms';
  */
 
 export default function MakeSafetyPlan({ setPanelContent }) {
+  const plans = [
+    {
+      id: "peoplesBudget",
+      name: "People's Budget",
+      url: "https://docs.google.com/document/d/16-3SKF5E040Zax0nemxedPWRRsv3FJgStKO4s0lCeWw/edit",
+      data: peoplesBudget,
+    },
+    {
+      id: "safetyForAll",
+      name: "Safety for All",
+      url: "https://beta.documentcloud.org/documents/20417659-2020-11-27-minneapolis-safety-for-all-budget-proposal",
+      data: safetyForAllBudget,
+    }
+  ]
+
   // State!
+  const [planId, setPlanId] = useState('peoplesBudget')
   const [harms, setHarms] = useState(defaultHarms);
-  const [mitigations, setMitigations] = useState(safetyForAllBudget);
+  const initialPlan = plans.find(p => p.id === planId);
+  const [mitigations, setMitigations] = useState((initialPlan && initialPlan.data) || []);
 
   const entityArraySorter = (a, b) => a.id > b.id ? 1 : -1;
 
@@ -84,10 +100,29 @@ export default function MakeSafetyPlan({ setPanelContent }) {
     return '';
   }
 
+  // Set Plan
+  const setPlanClickHandlerFactory = (plan) => (event) => {
+    event.preventDefault();
+
+    // Update the plan - and correspondingly update mitigations
+    setPlanId(plan.id);
+    setMitigations(plan.data);
+  }
+
   // Connections
   // connection = { mitigation
   return (
     <div>
+      <div className="row">
+        <div className="twelve columns plan-selection">
+          { plans.map(plan => (
+            <button key={plan.id} className={plan.id === planId ? "button-primary" : ""} onClick={setPlanClickHandlerFactory(plan)}>
+              {plan.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="row">
         <div className="twelve columns">
           <Graph mitigations={mitigations} harms={harms} />
