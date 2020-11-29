@@ -172,7 +172,7 @@ export default [
   },
   {
     id: "street-outreach-violence-prevention",
-    name: "coordinated street outreach teams geared toward violence prevention",
+    name: "Coordinated street outreach teams geared toward violence prevention",
     description: "Fund coordinated street outreach teams geared toward violence prevention and supportive services.",
     cost: 6500000,
     parents: [],

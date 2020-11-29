@@ -7,7 +7,7 @@ body {
 }
 
 a {
-  color: inherit;
+  /*color: inherit;*/
   text-decoration: none;
 }
 
@@ -33,7 +33,14 @@ a {
 .safetyItems > div {
   margin: 1rem 0;
   padding: .25rem;
-  border: 1px solid purple;
+  border: 1px solid #aaa;
+  cursor: pointer;
+}
+.safetyItems .toggle {
+  color: #999;
+}
+.safetyItems > div > p {
+  margin: 0;
 }
 .safetyItems > div.highlighted {
   background-color: lightblue;
@@ -51,4 +58,11 @@ a {
 }
 .plan-selection > button:last-child {
   margin-right: 0;
+}
+.plan-learn-more {
+  text-align: right;
+}
+
+.maker-graph {
+  border: 1px solid #bbb;
 }

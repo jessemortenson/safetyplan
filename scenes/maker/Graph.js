@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from "react";
 // import dynamic from "next/dynamic";
 import { forceCollide } from "d3-force-3d";
+import currencyFormatter from "../../shared/utils/currencyFormatter";
 
-export default function Graph({ mitigations, harms }) {
+export default function Graph({ mitigations, harms, showHarms, height, width }) {
   // https://coolors.co/eddcd2-fff1e6-fde2e4-fad2e1-c5dedd-dbe7e4-f0efeb-d6e2e9-bcd4e6-99c1de
   const mitigationColors = {
     health: "#BCD4E6",
@@ -24,16 +25,6 @@ export default function Graph({ mitigations, harms }) {
     "physical-health": "#bfacb5",
     "unsafe-streets": "#7f7b82",
     "housing": "#7f7b82",
-  }
-
-  const currencyFormatter = (num) => {
-    if(num > 999 && num < 1000000){
-      return `$${(num/1000).toFixed(1)}K`; // convert to K for number from > 1000 < 1 million
-    }else if(num >= 1000000){
-      return `$${(num/1000000).toFixed(1)}M`; // convert to M for number from > 1 million
-    }else if(num < 900){
-      return `$${num}`; // if value < 1000, nothing to do
-    }
   }
 
   const dotMin = 10;
@@ -75,6 +66,7 @@ export default function Graph({ mitigations, harms }) {
   }
 
   const mitigationToLinksReducer = (links, m) => {
+    if (!showHarms) return [];
     return links.concat(m.targets.map(t => ({ source: m.id, target: t.id })));
   }
 
@@ -94,8 +86,9 @@ export default function Graph({ mitigations, harms }) {
   }
 
   const [budgetNode, budgetLinks] = makeCityBudgetAndLinks(mitigations);
+  const harmsToShow = showHarms ? harms.filter(harmFilter).map(harmMapper) : [];
   const graphData = {
-    nodes: mitigations.map(mitigationMapper).concat(harms.filter(harmFilter).map(harmMapper)).concat([budgetNode]),
+    nodes: mitigations.map(mitigationMapper).concat(harmsToShow).concat([budgetNode]),
     links: mitigations.reduce(mitigationToLinksReducer, []).concat(budgetLinks),
   };
 
@@ -171,8 +164,8 @@ export default function Graph({ mitigations, harms }) {
   // ));
   return <ForceGraph2D
     graphData={graphData}
-    width={960}
-    height={640}
+    width={width}
+    height={height}
     cooldownTime={3000}
     nodeCanvasObject={shapeMaker}
     nodeRelSize={.6}
