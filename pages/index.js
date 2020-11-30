@@ -15,7 +15,6 @@ export default function Home() {
       <div className="container">
         <Head>
           <title>Public Safety Planning</title>
-          <link rel="icon" href="/favicon.ico" />
         </Head>
 
         <main>
