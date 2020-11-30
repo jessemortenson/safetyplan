@@ -193,6 +193,17 @@ export default function MakeSafetyPlan({ setPanelContent }) {
     }
   });
 
+  // elements
+  const harmSelectDropDown = (
+    <select className="u-full-width" onChange={harmHighlightChangeHandler}>
+      <option value="" selected={harmHighlighted === null}>-- show only proposals re:...</option>
+      <option value="">All</option>
+      { harmsTargetedByMitigations.sort(harmsByAlphaSorter).map(h => (
+        <option value={h.id} selected={harmHighlighted === h.id}>{h.name}</option>
+      ))}
+    </select>
+  );
+
   return (
     <div>
       <div className="row">
@@ -220,13 +231,7 @@ export default function MakeSafetyPlan({ setPanelContent }) {
           </label>
         </div>
         <div className="four columns">
-          <select className="u-full-width" onChange={harmHighlightChangeHandler}>
-            <option value="" selected={harmHighlighted === null}>-- show only proposals re:...</option>
-            <option value="">All</option>
-            { harmsTargetedByMitigations.sort(harmsByAlphaSorter).map(h => (
-              <option value={h.id} selected={harmHighlighted === h.id}>{h.name}</option>
-            ))}
-          </select>
+          { harmSelectDropDown }
         </div>
       </div>
 
@@ -243,9 +248,12 @@ export default function MakeSafetyPlan({ setPanelContent }) {
       </div>
 
       <div className="row">
-        <div className="one-half column">
+        <div className="one-half column mitigations-list">
           <h2>Proposals</h2>
           <h3>What solutions reduce the risk of someone being harmed, or help them heal?</h3>
+          <div className="harm-selector-mobile">
+            { harmSelectDropDown }
+          </div>
           {/*<button type="button" onClick={addMitigation}>Describe Mitigation</button>*/}
           <div className="safetyItems">
             { mitigations.filter(m => harmHighlighted === null || m.targets.find(t => t.id === harmHighlighted)).sort((a, b) => {
@@ -274,7 +282,7 @@ export default function MakeSafetyPlan({ setPanelContent }) {
           </div>
         </div>
 
-        <div className="one-half column">
+        <div className="one-half column harms-list">
           <h2>Harms</h2>
           <h3>What are some of the root causes of risk/unsafety to people in Minneapolis?</h3>
           {/*<button type="button" onClick={addHarm}>Describe Harm</button>*/}

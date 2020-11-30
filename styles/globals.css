@@ -43,6 +43,10 @@ a {
   margin-top: 2rem;
 }
 
+.harms-list {
+  display: none; /* hide by default for mobile */
+}
+
 .safetyItems > div {
   margin: 1rem 0;
   padding: .25rem;
@@ -67,10 +71,8 @@ a {
   text-align: center;
 }
 .plan-selection > button {
-  margin-right: 1rem;
-}
-.plan-selection > button:last-child {
-  margin-right: 0;
+  margin-right: .5rem;
+  padding: 0 20px;
 }
 .plan-learn-more {
   text-align: right;
@@ -78,4 +80,19 @@ a {
 
 .maker-graph {
   border: 1px solid #bbb;
+}
+
+@media screen and (min-width: 541px) {
+  .plan-selection > button {
+    margin-right: 1rem;
+  }
+  .plan-selection > button:last-child {
+    margin-right: 0;
+  }
+  .harm-selector-mobile {
+    display: none;
+  }
+  .harms-list {
+    display: block;
+  }
 }
