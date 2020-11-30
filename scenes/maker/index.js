@@ -35,6 +35,8 @@ export default function MakeSafetyPlan({ setPanelContent }) {
   const [planId, setPlanId] = useState('peoplesBudget')
   const [harms, setHarms] = useState(defaultHarms);
   const [showHarms, setShowHarms] = useState(true);
+  const [showCityBudget, setShowCityBudget] = useState(false);
+  const [showPoliceBudget, setShowPoliceBudget] = useState(false);
   const [harmHighlighted, setHarmHighlighted] = useState(null);
   const initialPlan = plans.find(p => p.id === planId);
   const [mitigations, setMitigations] = useState((initialPlan && initialPlan.mitigations) || []);
@@ -127,6 +129,16 @@ export default function MakeSafetyPlan({ setPanelContent }) {
   // Set show harms
   const showHarmsChangeHandler = (event) => {
     setShowHarms(!showHarms);
+  }
+
+  // Set show City Budget
+  const showCityBudgetChangeHandler = (event) => {
+    setShowCityBudget(!showCityBudget);
+  }
+
+  // Set show Police Budget
+  const showPoliceBudgetChangeHandler = (event) => {
+    setShowPoliceBudget(!showPoliceBudget);
   }
 
   // Set mitigation highlighted
@@ -229,8 +241,16 @@ export default function MakeSafetyPlan({ setPanelContent }) {
             <input type="checkbox" checked={showHarms} onChange={showHarmsChangeHandler} />
             <span className="label-body">Show Harms addressed by proposals</span>
           </label>
+          <label>
+            <input type="checkbox" checked={showCityBudget} onChange={showCityBudgetChangeHandler} />
+            <span className="label-body">Show size of City Budget</span>
+          </label>
+          <label>
+            <input type="checkbox" checked={showPoliceBudget} onChange={showPoliceBudgetChangeHandler} />
+            <span className="label-body">Show size of Police Budget</span>
+          </label>
         </div>
-        <div className="four columns">
+        <div className="four columns harm-selector-graph">
           { harmSelectDropDown }
         </div>
       </div>
@@ -241,6 +261,8 @@ export default function MakeSafetyPlan({ setPanelContent }) {
             mitigations={mitigations.filter(m => harmHighlighted === null || m.targets.find(t => t.id === harmHighlighted))}
             harms={harmsToShow}
             showHarms={showHarms}
+            showCityBudget={showCityBudget}
+            showPoliceBudget={showPoliceBudget}
             height={graphDimensions.height}
             width={graphDimensions.width}
           />

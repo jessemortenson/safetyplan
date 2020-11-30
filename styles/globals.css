@@ -31,12 +31,18 @@ a {
 }
 
 .graph-controls select {
-  height: 80%;
   margin: 0 0 4px 0;
   padding: 1px;
 }
 .graph-controls label {
   margin: 0;
+}
+.harm-selector-graph {
+  display: flex;
+  flex-direction: column;
+}
+.graph-controls .harm-selector-graph select {
+  margin-top: auto;
 }
 
 .row.about {
@@ -88,6 +94,9 @@ a {
   }
   .plan-selection > button:last-child {
     margin-right: 0;
+  }
+  .graph-controls {
+    display: flex;
   }
   .harm-selector-mobile {
     display: none;

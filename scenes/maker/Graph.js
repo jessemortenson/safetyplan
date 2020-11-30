@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from "react";
 import { forceCollide } from "d3-force-3d";
 import currencyFormatter from "../../shared/utils/currencyFormatter";
 
-export default function Graph({ mitigations, harms, showHarms, height, width }) {
+export default function Graph({ mitigations, harms, showHarms, showCityBudget, showPoliceBudget, height, width }) {
   // https://coolors.co/eddcd2-fff1e6-fde2e4-fad2e1-c5dedd-dbe7e4-f0efeb-d6e2e9-bcd4e6-99c1de
   const mitigationColors = {
     health: "#BCD4E6",
@@ -40,7 +40,8 @@ export default function Graph({ mitigations, harms, showHarms, height, width }) 
   const harmMax = Math.max(...harmSizes);
   const harmRadiusTransform = () => 25 // (quantity) => ((quantity - harmMin) / (harmMax - harmMin)) * (dotMax - dotMin) + dotMin;
 
-  const mitigationScaler = cost => .0002 * cost;
+  const realCostScale = .0002;
+  const mitigationScaler = cost => realCostScale * cost;
   const mitigationMapper = (m) => ({
     ...m,
     type: "mitigation",
@@ -62,14 +63,18 @@ export default function Graph({ mitigations, harms, showHarms, height, width }) 
     return links.concat(m.targets.filter(t => harms.find(h => h.id === t.id)).map(t => ({ source: m.id, target: t.id })));
   }
 
-  const cityBudgetScaler = cost => .00000002 * cost;
+  // City Budget
+  // 2021 Mayor's budget - debt service - capital improvement
+  // pg 4 http://www2.minneapolismn.gov/www/groups/public/@finance/documents/webcontent/wcmsp-226230.pdf
+  const cityBudgetTotal = 1470000000 - 120400000 - 198500000;
+  const cityBudgetScaler = cost => showCityBudget ? realCostScale * cost : .00000002 * cost;
   const makeCityBudgetAndLinks = (mitigations) => {
     const budget = {
       id: "budget",
       type: "budget",
-      name: "City Budget",
+      name: `${currencyFormatter(cityBudgetTotal)}: City Budget`,
       description: "The City Budget",
-      val: cityBudgetScaler(1470000000),
+      val: cityBudgetScaler(cityBudgetTotal),
       color: '#aaa'
     };
     const links = mitigations.map(m => ({ source: m.id, target: budget.id }));
@@ -77,11 +82,31 @@ export default function Graph({ mitigations, harms, showHarms, height, width }) 
     return [budget, links];
   }
 
+  // Police Budget
+  // pg 4 http://www2.minneapolismn.gov/www/groups/public/@finance/documents/webcontent/wcmsp-226230.pdf
+  const policeBudgetTotal = 178700000;
+  const policeBudget = {
+    id: "police",
+    type: "mitigation",
+    name: "Police",
+    description: "Minneapolis Police Department (Mayor's proposed 2021 budget)",
+    val: policeBudgetTotal * realCostScale,
+    cost: policeBudgetTotal,
+    color: '#999',
+  }
+  const policeLink = {
+    source: "police",
+    target: "budget"
+  }
+  const policeBudgetMaybe = showPoliceBudget ? [policeBudget] : [];
+  const policeLinksMaybe = showPoliceBudget ? [policeLink] : [];
+
+  // Graph data
   const [budgetNode, budgetLinks] = makeCityBudgetAndLinks(mitigations);
   const harmsToShow = showHarms ? harms.map(harmMapper) : [];
   const graphData = {
-    nodes: mitigations.map(mitigationMapper).concat(harmsToShow).concat([budgetNode]),
-    links: mitigations.reduce(mitigationToLinksReducer, []).concat(budgetLinks),
+    nodes: mitigations.map(mitigationMapper).concat(harmsToShow).concat([budgetNode]).concat(policeBudgetMaybe),
+    links: mitigations.reduce(mitigationToLinksReducer, []).concat(budgetLinks).concat(policeLinksMaybe),
   };
 
   // Shape makers
@@ -94,7 +119,7 @@ export default function Graph({ mitigations, harms, showHarms, height, width }) 
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     const baseText = (node.type === 'harm' || node.type === 'budget') ? node.name : currencyFormatter(node.cost);
-    const text = (node.type === 'mitigation' && node.val > 15) ? `${baseText}: ${node.name}` : baseText;
+    const text = (node.type === 'mitigation' && (node.val > 15 || scale > 4)) ? `${baseText}: ${node.name}` : baseText;
     const words = text.split(' ');
     if (words.length < 3) {
       ctx.fillText(text, x, y);
@@ -120,9 +145,8 @@ export default function Graph({ mitigations, harms, showHarms, height, width }) 
     ctx.fillRect(x - width/2, y - height/2, width, height);
   }
   const shapeMaker = (node, ctx, scale) => {
-    if ((new Date().getMilliseconds() % 100) === 0) console.log(scale);
     ctx.fillStyle = node.color;
-    if (node.type === 'budget') {
+    if (node.type === 'budget' && !showCityBudget) {
       squareMaker(node, ctx, scale);
     } else {
       circleMaker(node, ctx, scale);
