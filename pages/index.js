@@ -36,8 +36,11 @@ export default function Home() {
               {" "}mapped out and related to the harms they hope to address.
             </p>
             <p>I took some liberties with shorter names for certain proposals, and major liberty in describing the harms
-            these proposals address. If the harms listed here are incomplete or inaccurate, that's my fault, not the
-            original authors. This is 100% an independent project.</p>
+            these proposals address. For example: racism/white supremacy shapes many of the root harms listed here, but
+              I've so far linked it to relatively few mitigations. I could list patriarchy and link to many harms here.
+              My goal is to suggest thinking about the root harms that should motivate our public safety policies, not
+              to suggest an end to that thinking. If the harms listed here are incomplete or inaccurate,
+              that's my fault, not the original authors. This is 100% an independent project.</p>
             <p>What would it look like if residents described the harms they face, and ideas for solutions that mitigate
             those harms? A future version of this experiment could allow visitors to modify and safe their own safety plans.</p>
           </div>
