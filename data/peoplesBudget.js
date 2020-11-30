@@ -4,7 +4,7 @@ export default [
     name: "24/7 Mental Health Teams",
     cost: 4500000,
     parents: [],
-    description: "24/7 city-wide, rapid-response mobile mental health teams",
+    description: "24/7 mental health teams",
     theme: "health",
     targets: [{ id: "police-violence"}, {id: "mental-health"}]
   },
@@ -28,7 +28,7 @@ export default [
   },
   {
     id: "culturally-specific-mental-health",
-    name: "Culturally-specific mental health",
+    name: "Cultural-specific mental health",
     cost: 1000000,
     parents: [],
     description: "Expand existing culturally-specific, community and mental health programs with emphasis on programs offering services in Spanish, Somali, Oromo, Hmong, and languages other than English",
@@ -64,7 +64,7 @@ export default [
   },
   {
     id: "culturally-specific-drop-in",
-    name: "Culturally-specific drop-in centers",
+    name: "Cultural-specific drop-in",
     cost: 1000000,
     parents: [],
     description: "Fund the development of a minimum of two culturally-specific, community-based drop-in centers with a focus on harm reduction, at least one in North and one in South.",
@@ -91,7 +91,7 @@ export default [
   },
   {
     id: "mobile-outreach-medicine",
-    name: "Mobile outreach & medicine support",
+    name: "Mobile outreach & medicine",
     cost: 250000,
     parents: [],
     description: "Fund vehicle and other mobile support for outreach teams, such as mobile medicine and shelter for care and connecting with services",
@@ -145,7 +145,7 @@ export default [
   },
   {
     id: "mutual-aid-sites",
-    name: "Support mutual aid sites",
+    name: "Mutual aid sites",
     description: "Ongoing support for mutual aid sites, including those without nonprofit status",
     cost: 4500000,
     parents: [],
@@ -154,7 +154,7 @@ export default [
   },
   {
     id: "support-dsv-survivors",
-    name: "Support survivors of domestic/sexual violence",
+    name: "Survivors of domestic/sexual violence",
     description: "Increase funding to existing contracts to provide direct economic support for survivors of domestic and sexual violence. Support must be meaningful and go beyond reimbursements or gas cards",
     cost: 30000,
     parents: [],
@@ -163,7 +163,7 @@ export default [
   },
   {
     id: "workers-rights-outreach",
-    name: "Worker's rights outreach and investigation",
+    name: "Worker's rights outreach",
     description: "Protect community contracts for education and outreach on worker rights, including sick and safe time and liveable minimum wage, and fund 6 investigators in Labor Standards Department",
     cost: 600000,
     parents: [],
@@ -172,7 +172,7 @@ export default [
   },
   {
     id: "street-outreach-violence-prevention",
-    name: "Coordinated street outreach teams geared toward violence prevention",
+    name: "Street outreach for violence prevention",
     description: "Fund coordinated street outreach teams geared toward violence prevention and supportive services.",
     cost: 6500000,
     parents: [],
@@ -190,7 +190,7 @@ export default [
   },
   {
     id: "restorative-justice-grant-program",
-    name: "Grants for new neighborhood restorative justice programs",
+    name: "New neighborhood restorative justice programs",
     description: "Create a 5-year grant program that neighborhoods can apply for to build their own neighborhood-based RJ group, or to expand the work of organizations doing similar work like the Power of People Leadership Institute",
     cost: 450000,
     parents: [],
@@ -199,7 +199,7 @@ export default [
   },
   {
     id: "domestic-abuse-transformation-programming",
-    name: "Domestic Abuse Transformation Programming (DATP)",
+    name: "Domestic Abuse Transformation",
     description: "Domestic Abuse Transformation Programming (DATP)",
     cost: 650000,
     parents: [],
@@ -208,7 +208,7 @@ export default [
   },
   {
     id: "311-report-calls",
-    name: "Redirect report-only calls to 311",
+    name: "Report-only calls to 311",
     description: "Permanently redirect all report-only calls to 311 and fund a public education campaign about the change",
     cost: 2500000,
     parents: [],
@@ -217,7 +217,7 @@ export default [
   },
   {
     id: "little-earth-safety",
-    name: "Little Earth community safety activities",
+    name: "Little Earth safety",
     description: "Fund the replacement of a federal community safety coordination grant for community safety activities for and by Little Earth residents and to restart restorative justice programming",
     cost: 200000,
     parents: [],
@@ -226,7 +226,7 @@ export default [
   },
   {
     id: "immigrant-affairs-dept",
-    name: "Expand Office of Immigrant and Refugee Affairs",
+    name: "Expand Immigrant & Refugee Affairs",
     description: "Increase funding to the Office of Immigrant and Refugee affairs to expand the office into a fully staffed city department (similar to those that exist in Chicago, Seattle, San Francisco, and New York)",
     cost: 750000,
     parents: [],
@@ -280,7 +280,7 @@ export default [
   },
   {
     id: "sex-worker-incarcerated-grants",
-    name: "Grants for previously-incarcerated sex workers",
+    name: "Previously-incarcerated sex workers",
     description: "Grants for previous incarcerated sex workers and sex workers with felony records",
     cost: 200000,
     parents: [],
@@ -289,7 +289,7 @@ export default [
   },
   {
     id: "worker-owned-strip-club",
-    name: "Support to establish a worker-owned strip club co-op",
+    name: "Worker-owned strip club co-op",
     description: "Small business support to establish a worker-owned strip club co-op where workers can create a business that lives the values outlined in the ordinance SWOP advised on last year",
     cost: 700000,
     parents: [],
@@ -352,7 +352,7 @@ export default [
   },
   {
     id: "george-floyd-square",
-    name: "Permanently maintain George Floyd Square",
+    name: "George Floyd Square",
     description: "Permanently maintain George Floyd Square with the sculpture in the middle of the intersection, with gathering spaces on the Chicago side of Cup Foods",
     cost: 500000,
     parents: [],

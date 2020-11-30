@@ -95,7 +95,14 @@ export default function Graph({ mitigations, harms, showHarms, height, width }) 
     ctx.textBaseline = 'middle';
     const baseText = (node.type === 'harm' || node.type === 'budget') ? node.name : currencyFormatter(node.cost);
     const text = (node.type === 'mitigation' && node.val > 15) ? `${baseText}: ${node.name}` : baseText;
-    ctx.fillText(text, x, y);
+    const words = text.split(' ');
+    if (words.length < 3) {
+      ctx.fillText(text, x, y);
+    } else {
+      const vertPad = scale < 3 ? 3 : 1;
+      ctx.fillText(words.slice(0, Math.floor(words.length / 2)).join(' '), x, y-vertPad)
+      ctx.fillText(words.slice(Math.floor(words.length / 2)).join(' '), x, y+vertPad);
+    }
   }
   const circleMaker = (node, ctx, scale) => {
     const { x, y } = node;
@@ -113,6 +120,7 @@ export default function Graph({ mitigations, harms, showHarms, height, width }) 
     ctx.fillRect(x - width/2, y - height/2, width, height);
   }
   const shapeMaker = (node, ctx, scale) => {
+    if ((new Date().getMilliseconds() % 100) === 0) console.log(scale);
     ctx.fillStyle = node.color;
     if (node.type === 'budget') {
       squareMaker(node, ctx, scale);
