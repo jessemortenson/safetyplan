@@ -18,7 +18,8 @@ export default function MakeSafetyPlan({ setPanelContent }) {
     {
       id: "peoplesBudget",
       name: "People's Budget",
-      authors: "Black Visions, Reclaim the Block and others",
+      authors: "Black Visions, Reclaim the Block, Take Action MN, Jewish Community Action, Inquilinxs Unidxs, " +
+        "Reviving Sisterhood, Outfront MN, Violence Free MN, SWOP Mpls, Navigate MN and others",
       url: "https://docs.google.com/document/d/16-3SKF5E040Zax0nemxedPWRRsv3FJgStKO4s0lCeWw/edit",
       mitigations: peoplesBudget,
     },
@@ -33,6 +34,7 @@ export default function MakeSafetyPlan({ setPanelContent }) {
 
   // State!
   const [planId, setPlanId] = useState('peoplesBudget')
+  const [showHelp, setShowHelp] = useState(false);
   const [harms, setHarms] = useState(defaultHarms);
   const [showHarms, setShowHarms] = useState(true);
   const [showCityBudget, setShowCityBudget] = useState(false);
@@ -112,6 +114,12 @@ export default function MakeSafetyPlan({ setPanelContent }) {
     const newMitigations = mitigations.map(m => ({...m, highlight: 0}));
     setHarms(newHarms);
     setMitigations(newMitigations);
+  }
+
+  // Toggle help
+  const toggleHelpHandler = (event) => {
+    event.preventDefault();
+    setShowHelp(!showHelp);
   }
 
   // Set Plan
@@ -219,6 +227,28 @@ export default function MakeSafetyPlan({ setPanelContent }) {
   return (
     <div>
       <div className="row">
+        <div className="twelve columns how-to">
+          <p className="how-to-link"><a href="#" onClick={toggleHelpHandler}><strong>How to use this tool ❓</strong></a></p>
+          { showHelp && <div>
+            <p>This tool visualizes two proposals for new public safety programs in
+              Minneapolis. To start, click either the <strong>People's Budget</strong> or <strong>Safety For All</strong> button to examine one of them.
+              Each solution in the
+              proposal is represented by a circle, sized proportionately to its budget cost. Each solution is also linked to
+              one or more harms that the solution attempts to fix (these are pale-purple circles).</p>
+              <p>You can pinch (or use mouse/trackpad scrolling) to zoom in. You can also hide or show elements of the
+              graph by checking or unchecking the checkboxes. Try showing the size of the police budget to put things
+              in perspective, or unchecking the "Show Harms" checkbox if you want to just see proposed solutions.</p>
+            <p>You can also scroll past the graph to see a list of the solutions in the proposal. Click a solution in the list
+              to read more details about it. You can use the drop-downs to focus in on solutions related to a specific harm.
+              <br /><em><a href="#" onClick={toggleHelpHandler}>hide this help message</a></em>
+            </p>
+            <p></p>
+          </div> }
+
+        </div>
+      </div>
+
+      <div className="row">
         <div className="twelve columns plan-selection">
           { plans.map(plan => (
             <button key={plan.id} className={plan.id === planId ? "button-primary" : ""} onClick={setPlanClickHandlerFactory(plan)}>
@@ -230,7 +260,7 @@ export default function MakeSafetyPlan({ setPanelContent }) {
 
       <div className="row plan-info">
         <div className="nine columns">
-          Plan shown: { currencyFormatter(currentPlanCost) } <strong>{currentPlan.name }</strong> by {currentPlan.authors}
+          Plan shown: <strong>{ currencyFormatter(currentPlanCost) }</strong> <strong>{currentPlan.name }</strong> by {currentPlan.authors}
         </div>
         <div className="three columns plan-learn-more"><a href={currentPlan.url} target="_blank">Read the plan</a></div>
       </div>

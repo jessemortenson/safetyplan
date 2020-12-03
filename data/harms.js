@@ -26,7 +26,7 @@ export default [
   },
   {
     id: "addiction",
-    name: "Addiction & unsafe drug use",
+    name: "Substance use & overdose prevention",
     quantity: 15,
   },
   {

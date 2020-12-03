@@ -49,6 +49,16 @@ a {
   margin-top: 2rem;
 }
 
+.how-to-link {
+  text-align: right;
+  margin-top: -2rem;
+  margin-bottom: 2rem;
+}
+
+.plan-info {
+  margin-bottom: 2rem;
+}
+
 .harms-list {
   display: none; /* hide by default for mobile */
 }
